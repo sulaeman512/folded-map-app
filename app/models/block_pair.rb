@@ -1,0 +1,2 @@
+class BlockPair < ApplicationRecord
+end
