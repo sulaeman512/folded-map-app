@@ -1,0 +1,1 @@
+render partial: "block_pair.json.jb", locals: { block_pair: @block_pair }

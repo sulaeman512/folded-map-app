@@ -5,6 +5,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     
+    get "/block_pair/:id" => "block_pairs#show"
+    # keeping blockpair singular intentionally
+
     get "/conversations" => "conversations#index"
     post "/conversations" => "conversations#create"
     get "/conversations/:id" => "conversations#show"

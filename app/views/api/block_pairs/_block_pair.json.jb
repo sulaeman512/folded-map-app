@@ -1,0 +1,6 @@
+{
+  id: block_pair.id,
+  name: block_pair.name,
+  ew_max: block_pair.ew_max,
+  ns_max: block_pair.ns_max
+}
