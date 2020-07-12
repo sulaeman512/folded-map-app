@@ -1,0 +1,17 @@
+{
+  id: user.id,
+  email: user.email,
+  first_name: user.first_name,
+  last_name: user.last_name,
+  display_name: user.display_name,
+  street_num: user.street_num,
+  street_direction: user.street_direction,
+  street: user.street,
+  zip_code: user.zip_code,
+  block_id: user.block_id,
+  image_url: user.image_url,
+  how_i_got_here: user.how_i_got_here,
+  what_i_like: user.what_i_like,
+  what_i_would_change: user.what_i_would_change,
+  birthday: user.birthday
+}
