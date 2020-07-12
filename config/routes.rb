@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     post "/conversations" => "conversations#create"
     get "/conversations/:id" => "conversations#show"
 
+    post "/messages" => "messages#create"
+
     post "/sessions" => "sessions#create"
 
     post "/users" => "users#create"
