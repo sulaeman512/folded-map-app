@@ -1,6 +1,9 @@
 class User < ApplicationRecord
 
-  belongs_to :block
+  has_secure_password
+  validates :email, presence: true, uniqueness: true
+
+  belongs_to :block, optional: true
   has_many :conversations, class_name: "Conversation", foreign_key: "sender_id"
   has_many :conversations, class_name: "Conversation", foreign_key: "recipient_id"
   has_many :messages
@@ -9,6 +12,10 @@ class User < ApplicationRecord
 
   def block_pair
     block.block_pair
+  end
+
+  def display_name
+    first_name + " " + last_name[0]
   end
 
 end
