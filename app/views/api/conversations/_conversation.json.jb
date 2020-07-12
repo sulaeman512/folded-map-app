@@ -1,0 +1,6 @@
+{
+  id: conversation.id,
+  sender_id: conversation.sender_id,
+  recipient_id: conversation.recipient_id,
+  map_twin: conversation.map_twin
+}

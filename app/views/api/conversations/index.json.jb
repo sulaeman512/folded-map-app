@@ -1,0 +1,3 @@
+@conversations.map do |conversation|
+  render partial: "conversation.json.jb", locals: { conversation: conversation }
+end
