@@ -1,0 +1,7 @@
+{
+  id: post.id,
+  block_pair_id: post.block_pair_id,
+  user_id: post.user_id,
+  text: post.text,
+  image_url: post.image_url
+}

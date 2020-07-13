@@ -13,6 +13,12 @@ Rails.application.routes.draw do
     get "/conversations/:id" => "conversations#show"
 
     post "/messages" => "messages#create"
+    
+    get "/posts" => "posts#index"
+    post "/posts" => "posts#create"
+    get "/posts/:id" => "posts#show"
+    patch "/posts/:id" => "posts#update"
+    delete "/posts/:id" => "posts#destroy"
 
     post "/sessions" => "sessions#create"
 
