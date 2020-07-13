@@ -1,0 +1,6 @@
+{
+  id: message.id,
+  conversation_id: message.conversation_id,
+  text: message.text,
+  user_id: message.user_id
+}

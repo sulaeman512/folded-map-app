@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     get "/block_pair/:id" => "block_pairs#show"
     # keeping blockpair singular intentionally
 
+    post "/comments" => "comments#create"
+    patch "/comments/:id" => "comments#update"
+    delete "/comments/:id" => "comments#destroy"
+
     get "/conversations" => "conversations#index"
     post "/conversations" => "conversations#create"
     get "/conversations/:id" => "conversations#show"
