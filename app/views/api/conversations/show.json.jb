@@ -1,1 +1,3 @@
-render partial: "conversation.json.jb", locals: { conversation: @conversation }
+conversation = render partial: "conversation.json.jb", locals: { conversation: @conversation }
+conversation[:messages] = @conversation.messages
+conversation
