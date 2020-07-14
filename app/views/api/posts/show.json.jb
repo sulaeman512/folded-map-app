@@ -1,1 +1,3 @@
-render partial: "post.json.jb", locals: { post: @post }
+post = render partial: "post.json.jb", locals: { post: @post }
+post[:comments] = @post.comments
+post
