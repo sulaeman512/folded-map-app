@@ -42,6 +42,8 @@ class Api::UsersController < ApplicationController
         what_i_would_change: params[:what_i_would_change] || @user.what_i_would_change,
         birthday: params[:birthday] || @user.birthday,
       )
+      if params[:password]
+      end
       if @user.save
         render "show.json.jb"
       else

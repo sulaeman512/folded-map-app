@@ -1,3 +1,13 @@
 conversation = render partial: "conversation.json.jb", locals: { conversation: @conversation }
-conversation[:messages] = @conversation.messages
+
+if current_user.id == @conversation.recipient.id
+  conversation[:partner] = render partial: "/api/users/user", locals: {user: @conversation.sender}
+else
+  conversation[:partner] = render partial: "/api/users/user", locals: {user: @conversation.recipient}
+end
+
+conversation[:messages] = @conversation.messages.map do |message|
+  render partial: "/api/messages/message", locals: {message: message}
+end
+
 conversation

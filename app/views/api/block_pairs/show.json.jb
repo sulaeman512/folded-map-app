@@ -1,9 +1,7 @@
 block_pair = render partial: "block_pair.json.jb", locals: { block_pair: @block_pair }
 
-block_pair[:posts] = @block_pair.posts
+block_pair[:posts] = @block_pair.posts.map do |post|
+  render partial: "/api/posts/post", locals: {post: post}
+end
 
 block_pair
-
-# How do I get comments nested under posts?
-
-# block_pair[:posts] = @block_pair.posts.map {|post| render partial: "../posts/post.json.jb", locals: { post: post }}

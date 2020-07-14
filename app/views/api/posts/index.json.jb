@@ -1,3 +1,10 @@
 @posts.map do |post|
-  render partial: "post.json.jb", locals: { post: post }
+  all_posts = render partial: "post.json.jb", locals: { post: post }
+
+  all_posts[:comments] = post.comments.map do |comment|
+    render partial: "/api/comments/comment", locals: {comment: comment}
+  end
+
+  all_posts
+
 end
