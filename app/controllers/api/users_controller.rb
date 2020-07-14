@@ -43,6 +43,12 @@ class Api::UsersController < ApplicationController
         birthday: params[:birthday] || @user.birthday,
       )
       if params[:password]
+        if @user.authenticate(params[:old_password])
+          @user.update!(
+            password: params[:password],
+            password_confirmation: params[:password_confirmation]
+          )
+        end
       end
       if @user.save
         render "show.json.jb"
@@ -65,10 +71,6 @@ class Api::UsersController < ApplicationController
     else
       render json: {}, status: :forbidden
     end
-  end
-
-  def update_password
-    # separate update action needed for password and/or email???
   end
 
 end
