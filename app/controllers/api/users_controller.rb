@@ -17,8 +17,6 @@ class Api::UsersController < ApplicationController
     end
   end
 
-  # ^^ Start with address info too?
-
   def show
     @user = User.find(params[:id])
     render "show.json.jb"
@@ -31,17 +29,20 @@ class Api::UsersController < ApplicationController
         first_name: params[:first_name] || @user.first_name,
         last_name: params[:last_name] || @user.last_name,
         email: params[:email] || @user.email,
-        street_num: params[:street_num] || @user.street_num,
-        street_direction: params[:street_direction] || @user.street_direction,
-        street: params[:street] || @user.street,
-        zip_code: params[:zip_code] || @user.zip_code,
+        # street_num: params[:street_num] || @user.street_num,
+        # street_direction: params[:street_direction] || @user.street_direction,
+        # street: params[:street] || @user.street,
+        # zip_code: params[:zip_code] || @user.zip_code,
         block_id: params[:block_id] || @user.block_id,
         image_url: params[:image_url] || @user.image_url,
         how_i_got_here: params[:how_i_got_here] || @user.email,
         what_i_like: params[:what_i_like] || @user.what_i_like,
         what_i_would_change: params[:what_i_would_change] || @user.what_i_would_change,
-        birthday: params[:birthday] || @user.birthday,
+        birthday: params[:birthday] || @user.birthday
       )
+      if params[:street_num] || params[:street_direction] || params[:street] || params[:zip_code]
+        User.match_address(@user, params[:street_num], params[:street_direction], params[:street], params[:zip_code])
+      end
       if params[:password]
         if @user.authenticate(params[:old_password])
           @user.update!(
