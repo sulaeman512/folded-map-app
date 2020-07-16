@@ -50,15 +50,17 @@ class User < ApplicationRecord
     @longitude = request.parse["items"][0]["position"]["lng"]
     @house_number = request.parse["items"][0]["address"]["houseNumber"]
     @direction = request.parse["items"][0]["address"]["street"][0..0] #grabs first character
-    street = request.parse["items"][0]["address"]["street"][2..-1] #shaves off direction and space
+    @street = request.parse["items"][0]["address"]["street"][2..-1] #shaves off direction and space
     postal_code = request.parse["items"][0]["address"]["postalCode"][0..4]
     
     @user.update(
       street_num: @house_number || @user.street_num,
       street_direction: @direction || @user.street_direction,
-      street: street || @user.street,
+      street: @street || @user.street,
       zip_code: postal_code || @user.zip_code
     )
+
+    check_map_twin
 
     @block_matches = []
     @blocks.each do |k, v|
@@ -71,6 +73,27 @@ class User < ApplicationRecord
       create_block_pair_conversations
     end
 
+  end
+
+  # Triggered by match_address; only looks for N/S street map twins at the moment (ADD E/W lat/lng mirror version later?)
+  def self.check_map_twin
+    
+    if @direction == "N"
+      search_direction = "S"
+    elsif @direction == "S"
+      search_direction = "N"
+    end
+
+    @map_twin = User.find_by(street_direction: search_direction, street_num: @house_number, street: @street)
+
+    if @map_twin
+      conversation = Conversation.create(
+        sender_id: @user.id,
+        recipient_id: @map_twin.id,
+        map_twin: true
+      )
+    end
+    
   end
 
   # Triggered by match_address; looks for block match(es)
