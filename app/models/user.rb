@@ -44,23 +44,23 @@ class User < ApplicationRecord
       sw_9_9: [[41.815315, -87.7142025], [41.82259, -87.70425]]
     }
 
-    request = HTTP.get("https://geocode.search.hereapi.com/v1/geocode?q=#{user_street_num}+#{user_street_direction}+#{user_street}+#{user_zip_code}&apiKey=#{Rails.application.credentials.here_api[:api_key]}")
+    request = HTTP.get("https://geocode.search.hereapi.com/v1/geocode?q=#{user_street_num}+#{user_street_direction}+#{user_street}+#{user_zip_code}&apiKey=#{Rails.application.credentials.here_api[:api_key]}").parse
 
-    @latitude = request.parse["items"][0]["position"]["lat"]
-    @longitude = request.parse["items"][0]["position"]["lng"]
-    @house_number = request.parse["items"][0]["address"]["houseNumber"]
-    @direction = request.parse["items"][0]["address"]["street"][0..0] #grabs first character
-    @street = request.parse["items"][0]["address"]["street"][2..-1] #shaves off direction and space
-    postal_code = request.parse["items"][0]["address"]["postalCode"][0..4]
+    @latitude = request["items"][0]["position"]["lat"]
+    @longitude = request["items"][0]["position"]["lng"]
+    @house_number = request["items"][0]["address"]["houseNumber"]
+    @direction = request["items"][0]["address"]["street"][0..0] #grabs first character
+    @street = request["items"][0]["address"]["street"][2..-1] #shaves off direction and space
+    @postal_code = request["items"][0]["address"]["postalCode"][0..4]
     
     @user.update(
       street_num: @house_number || @user.street_num,
       street_direction: @direction || @user.street_direction,
       street: @street || @user.street,
-      zip_code: postal_code || @user.zip_code
+      zip_code: @postal_code || @user.zip_code
     )
 
-    check_map_twin
+    check_map_twin(@street)
 
     @block_matches = []
     @blocks.each do |k, v|
@@ -76,15 +76,59 @@ class User < ApplicationRecord
   end
 
   # Triggered by match_address; only looks for N/S street map twins at the moment (ADD E/W lat/lng mirror version later?)
-  def self.check_map_twin
+  def self.check_map_twin(street)
     
-    if @direction == "N"
-      search_direction = "S"
-    elsif @direction == "S"
-      search_direction = "N"
+    street = street.split(" ").join("+")
+    if @direction == "N" || @direction == "S"
+      if @direction == "N"
+        @search_direction = "S"
+      else
+        @search_direction = "N"
+      end
+      puts "=======================#{@house_number}"
+      puts "=======================#{@search_direction}"
+      puts "=======================#{street}"
+      puts "=======================#{@house_number.class}"
+      puts "=======================#{@search_direction.class}"
+      puts "=======================#{@street.class}"
+      map_twin_address = HTTP.get("https://geocode.search.hereapi.com/v1/geocode?q=#{@house_number}+#{@search_direction}+#{street}+Chicago+IL&apiKey=#{Rails.application.credentials.here_api[:api_key]}").parse
+      map_twin_house_number = map_twin_address["items"][0]["address"]["houseNumber"]
+      map_twin_direction = map_twin_address["items"][0]["address"]["street"][0..0]
+      map_twin_street = map_twin_address["items"][0]["address"]["street"][2..-1]
+      map_twin_postal_code = map_twin_address["items"][0]["address"]["postalCode"][0..4]
+      if (map_twin_direction != @direction) && (map_twin_postal_code != @postal_code) && (map_twin_house_number == @house_number) && (map_twin_street == @street)
+        @map_twin = User.find_by(street_direction: map_twin_direction, street_num: map_twin_house_number, street: map_twin_street)
+      else
+        if @latitude > 41.88098667 # average of all latitude points at Madison St intersections in Chicago
+          map_twin_lat = 41.88098667 - (@latitude - 41.88098667)
+        else
+          map_twin_lat = 41.88098667 + (41.88098667 - @latitude)
+        end
+        map_twin_address = HTTP.get("https://revgeocode.search.hereapi.com/v1/revgeocode?at=#{map_twin_lat}%2C#{@longitude}&lang=en-US&apiKey=#{Rails.application.credentials.here_api[:api_key]}")
+        map_twin_house_number = map_twin_address.parse["items"][0]["address"]["houseNumber"]
+        map_twin_direction = map_twin_address.parse["items"][0]["address"]["street"][0..0] #grabs first character
+        map_twin_street = map_twin_address.parse["items"][0]["address"]["street"][2..-1]
+        map_twin_postal_code = map_twin_address.parse["items"][0]["address"]["postalCode"][0..4]
+        puts "=======================#{map_twin_lat}"
+        puts "=======================#{map_twin_house_number}"
+        puts "=======================#{map_twin_direction}"
+        puts "=======================#{map_twin_street}"
+        puts "=======================#{map_twin_postal_code}"
+        @map_twin = User.find_by(street_direction: map_twin_direction, street_num: map_twin_house_number, street: map_twin_street, zip_code: map_twin_postal_code)
+      end
+    else
+      if @latitude > 41.88098667 # average of all latitude points at Madison St intersections in Chicago
+        map_twin_lat = 41.88098667 - (@latitude - 41.88098667)
+      else
+        map_twin_lat = 41.88098667 + (41.88098667 - @latitude)
+      end
+      map_twin_address = HTTP.get("https://revgeocode.search.hereapi.com/v1/revgeocode?at=#{map_twin_lat}%2C#{@longitude}&lang=en-US&apiKey=#{Rails.application.credentials.here_api[:api_key]}")
+      map_twin_house_number = map_twin_address.parse["items"][0]["address"]["houseNumber"]
+      map_twin_direction = map_twin_address.parse["items"][0]["address"]["street"][0..0] #grabs first character
+      map_twin_street = map_twin_address.parse["items"][0]["address"]["street"][2..-1]
+      map_twin_postal_code = map_twin_address.parse["items"][0]["address"]["postalCode"][0..4]
+      @map_twin = User.find_by(street_direction: map_twin_direction, street_num: map_twin_house_number, street: map_twin_street, zip_code: map_twin_postal_code)
     end
-
-    @map_twin = User.find_by(street_direction: search_direction, street_num: @house_number, street: @street)
 
     if @map_twin
       conversation = Conversation.create(

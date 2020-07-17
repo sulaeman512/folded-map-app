@@ -55,9 +55,6 @@ class Api::UsersController < ApplicationController
     else
       render json: {}, status: :forbidden
     end
-
-    # ^^ still need to build in a model method to assign block_id based on input address (and maybe to adjust address based on HERE API's result)
-
   end
 
   def destroy
