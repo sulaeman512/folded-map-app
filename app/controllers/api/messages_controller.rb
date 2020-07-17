@@ -4,7 +4,7 @@ class Api::MessagesController < ApplicationController
 
   def create
 
-    @conversation = Conversation.find(params[:conversation_id])
+    @conversation = Conversation.find_by(id: params[:conversation_id])
     if @conversation.sender_id == current_user.id ||@conversation.recipient_id == current_user.id
       conversation_id = params[:conversation_id]
       message = Message.new(

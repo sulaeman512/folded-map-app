@@ -3,7 +3,7 @@ class Api::PostsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    user = User.find(current_user.id)
+    user = User.find_by(id: current_user.id)
     if user.block && user.block_pair
       @posts = Post.where("block_pair_id = ?", user.block.block_pair.id)
       render "index.json.jb"
@@ -13,7 +13,7 @@ class Api::PostsController < ApplicationController
   end
 
   def create
-    user = User.find(current_user.id)
+    user = User.find_by(id: current_user.id)
     if user.block && user.block_pair
       @post = Post.new(
         block_pair_id: user.block_pair.id,
@@ -32,9 +32,9 @@ class Api::PostsController < ApplicationController
   end
 
   def show
-    @post = Post.find(params[:id])
+    @post = Post.find_by(id: params[:id])
     block_pair_id = @post.block_pair.id
-    user = User.find(current_user.id)
+    user = User.find_by(id: current_user.id)
     if user.block && user.block_pair && (user.block_pair.id == block_pair_id)
       render "show.json.jb"
     else
@@ -43,7 +43,7 @@ class Api::PostsController < ApplicationController
   end
 
   def update
-    @post = Post.find(params[:id])
+    @post = Post.find_by(id: params[:id])
     if current_user.id == @post.user_id
       @post.update(
         text: params[:text] || @post.text,
@@ -60,7 +60,7 @@ class Api::PostsController < ApplicationController
   end
 
   def destroy
-    @post = Post.find(params[:id])
+    @post = Post.find_by(id: params[:id])
     if current_user.id == @post.user_id
       @post.destroy
       render json: {message: "Post deleted successfully"}

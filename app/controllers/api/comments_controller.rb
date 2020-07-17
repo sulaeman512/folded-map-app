@@ -3,8 +3,8 @@ class Api::CommentsController < ApplicationController
   before_action :authenticate_user
 
   def create
-    user = User.find(current_user.id)
-    post = Post.find(params[:post_id])
+    user = User.find_by(id: current_user.id)
+    post = Post.find_by(id: params[:post_id])
     if user.block && user.block_pair && (user.block_pair.id == post.block_pair_id)
       @comment = Comment.new(
         user_id: current_user.id,
@@ -22,7 +22,7 @@ class Api::CommentsController < ApplicationController
   end
 
   def update
-    @comment = Comment.find(params[:id])
+    @comment = Comment.find_by(id: params[:id])
     if current_user.id == @comment.user_id
       @comment.update(
         text: params[:text] || @comment.text
@@ -38,7 +38,7 @@ class Api::CommentsController < ApplicationController
   end
 
   def destroy
-    @comment = Comment.find(params[:id])
+    @comment = Comment.find_by(id: params[:id])
     if current_user.id == @comment.user_id
       @comment.destroy
       render json: {message: "Comment deleted successfully"}
@@ -46,7 +46,5 @@ class Api::CommentsController < ApplicationController
       render json: {}, status: :forbidden
     end
   end
-
-
 
 end

@@ -18,7 +18,7 @@ class Api::UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
     if (@user.id == current_user.id) || Conversation.find_by(sender_id: current_user.id, recipient_id: @user.id) || Conversation.find_by(sender_id: @user.id, recipient_id: current_user.id)
       render "show.json.jb"
     else
@@ -27,7 +27,7 @@ class Api::UsersController < ApplicationController
   end
 
   def update
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
     if @user.id == current_user.id
       @user.update(
         first_name: params[:first_name] || @user.first_name,
@@ -62,7 +62,7 @@ class Api::UsersController < ApplicationController
   end
 
   def destroy
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
     if @user.id == current_user.id
       @user.destroy
       render json: {message: "User deleted successfully"}

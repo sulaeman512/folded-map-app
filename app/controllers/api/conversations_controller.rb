@@ -23,7 +23,7 @@ class Api::ConversationsController < ApplicationController
   # ^^ need to call this from User controller update method (upon address input): https://stackoverflow.com/questions/5767222/rails-call-another-controller-action-from-a-controller
  
   def show
-    @conversation = Conversation.find(params[:id])
+    @conversation = Conversation.find_by(id: params[:id])
     if @conversation.sender_id == current_user.id ||@conversation.recipient_id == current_user.id
       render "show.json.jb"
     else
