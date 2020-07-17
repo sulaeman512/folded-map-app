@@ -151,6 +151,8 @@ class User < ApplicationRecord
   def self.assign_block_match
     if @block_matches.length == 1
       @block_match = Block.find_by(name: @block_matches[0])
+      puts "=============#{@block_matches[0]}"
+      puts "=============#{Block.first}"
       @user.update(
         block_id: @block_match.id || @user.block_id
       )
