@@ -85,12 +85,6 @@ class User < ApplicationRecord
       else
         @search_direction = "N"
       end
-      puts "=======================#{@house_number}"
-      puts "=======================#{@search_direction}"
-      puts "=======================#{street}"
-      puts "=======================#{@house_number.class}"
-      puts "=======================#{@search_direction.class}"
-      puts "=======================#{@street.class}"
       map_twin_address = HTTP.get("https://geocode.search.hereapi.com/v1/geocode?q=#{@house_number}+#{@search_direction}+#{street}+Chicago+IL&apiKey=#{Rails.application.credentials.here_api[:api_key]}").parse
       map_twin_house_number = map_twin_address["items"][0]["address"]["houseNumber"]
       map_twin_direction = map_twin_address["items"][0]["address"]["street"][0..0]
@@ -109,11 +103,6 @@ class User < ApplicationRecord
         map_twin_direction = map_twin_address.parse["items"][0]["address"]["street"][0..0] #grabs first character
         map_twin_street = map_twin_address.parse["items"][0]["address"]["street"][2..-1]
         map_twin_postal_code = map_twin_address.parse["items"][0]["address"]["postalCode"][0..4]
-        puts "=======================#{map_twin_lat}"
-        puts "=======================#{map_twin_house_number}"
-        puts "=======================#{map_twin_direction}"
-        puts "=======================#{map_twin_street}"
-        puts "=======================#{map_twin_postal_code}"
         @map_twin = User.find_by(street_direction: map_twin_direction, street_num: map_twin_house_number, street: map_twin_street, zip_code: map_twin_postal_code)
       end
     else
@@ -143,7 +132,7 @@ class User < ApplicationRecord
   # Triggered by match_address; looks for block match(es)
   def self.find_block_match(block_key, boundary_coordinates)
     if @latitude.between?(boundary_coordinates[0][0], boundary_coordinates[1][0]) && @longitude.between?(boundary_coordinates[0][1], boundary_coordinates[1][1])
-      @block_matches << block_key
+      @block_matches << block_key.to_s
     end
   end
 
@@ -151,36 +140,34 @@ class User < ApplicationRecord
   def self.assign_block_match
     if @block_matches.length == 1
       @block_match = Block.find_by(name: @block_matches[0])
-      puts "=============#{@block_matches[0]}"
-      puts "=============#{Block.first}"
       @user.update(
         block_id: @block_match.id || @user.block_id
       )
     elsif @block_matches.length > 1
-      block1 = @block_matches[0].to_s.split("_")
-      block2 = @block_matches[1].to_s.split("_")
+      block1 = @block_matches[0].split("_")
+      block2 = @block_matches[1].split("_")
       if block1[0] == "nw" && block2[0] == "nw"
         if @direction.downcase == "n"
           if @house_number.to_i.even?
             if block1[1] > block2[1]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             end
           else
             if block1[1] < block2[1]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
@@ -189,24 +176,24 @@ class User < ApplicationRecord
         elsif @direction.downcase == "w"
           if @house_number.to_i.even?
             if block1[2] > block2[2]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             end
           else
             if block1[2] < block2[2]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
@@ -217,24 +204,24 @@ class User < ApplicationRecord
         if @direction.downcase == "s"
           if @house_number.to_i.even?
             if block1[1] > block2[1]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             end
           else
             if block1[1] < block2[1]
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
@@ -243,24 +230,24 @@ class User < ApplicationRecord
         elsif @direction.downcase == "w"
           if @house_number.to_i.even?
             if block1[2] > block2[2]
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             end
           else
             if block1[2] < block2[2]
-              @block_match = Block.where("name = ?", @block_matches[1])
+              @block_match = Block.find_by(name: @block_matches[1])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
             else
-              @block_match = Block.where("name = ?", @block_matches[0])
+              @block_match = Block.find_by(name: @block_matches[0])
               @user.update(
                 block_id: @block_match.id || @user.block_id
               )
