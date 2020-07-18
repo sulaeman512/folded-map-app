@@ -14,6 +14,7 @@ RSpec.describe "Conversations", type: :request do
     user4 = User.create(email: "user4@gmail.com", password: "password", first_name: "User", last_name: "4", image_url: "4.jpg", birthday: DateTime.new(2004,4,30), block_id: block1.id)
     user5 = User.create(email: "user5@gmail.com", password: "password", first_name: "User", last_name: "5", image_url: "5.jpg", birthday: DateTime.new(2005,5,30), block_id: block1.id)
     user6 = User.create(email: "user6@gmail.com", password: "password", first_name: "User", last_name: "6", image_url: "6.jpg", birthday: DateTime.new(2006,6,30), block_id: block2.id)
+    user7 = User.create(email: "user7@gmail.com", password: "password", first_name: "User", last_name: "7", image_url: "7.jpg", birthday: DateTime.new(2007,7,30), block_id: block3.id)
     Conversation.create(sender_id: user3.id, recipient_id: user1.id, map_twin: false)
     Conversation.create(sender_id: user4.id, recipient_id: user1.id, map_twin: false)
     Conversation.create(sender_id: user4.id, recipient_id: user2.id, map_twin: false)
@@ -88,6 +89,74 @@ RSpec.describe "Conversations", type: :request do
         "Authorization": "Bearer #{jwt}"
       }
       expect(response).to have_http_status(:not_found)
+    end
+  end
+  describe "POST /conversations" do
+    it "prevents logged-in user without block from creating a conversation" do
+      user = User.first
+      user2 = User.second
+      jwt = JWT.encode(
+        {
+          user_id: user.id, # the data to encode
+        },
+        Rails.application.credentials.fetch(:secret_key_base), # the secret key
+        "HS256" # the encryption algorithm
+      )
+      post "/api/conversations",
+      params: {
+        sender_id: user.id,
+        recipient_id: user2.id,
+      },
+      headers: {"Authorization": "Bearer #{jwt}"}
+      expect(response).to have_http_status(400)
+      expect(Conversation.count).to eq(3)
+    end
+    it "prevents logged-in user from creating a conversation with someone outside their block pair" do
+      user = User.find_by(email: "user7@gmail.com")
+      user2 = User.find_by(email: "user6@gmail.com")
+      jwt = JWT.encode(
+        {
+          user_id: user.id, # the data to encode
+        },
+        Rails.application.credentials.fetch(:secret_key_base), # the secret key
+        "HS256" # the encryption algorithm
+      )
+      post "/api/conversations",
+      params: {
+        sender_id: user.id,
+        recipient_id: user2.id,
+      },
+      headers: {"Authorization": "Bearer #{jwt}"}
+      expect(response).to have_http_status(403)
+      expect(Conversation.count).to eq(3)
+    end
+    it "allows logged-in user to create a conversation with someone in their block pair" do
+      user = User.fifth
+      user2 = User.fourth
+      jwt = JWT.encode(
+        {
+          user_id: user.id, # the data to encode
+        },
+        Rails.application.credentials.fetch(:secret_key_base), # the secret key
+        "HS256" # the encryption algorithm
+      )
+      post "/api/conversations",
+      params: {
+        sender_id: user.id,
+        recipient_id: user2.id,
+      },
+      headers: {"Authorization": "Bearer #{jwt}"}
+
+      expect(response).to have_http_status(200)
+      expect(Conversation.count).to eq(4)
+    end
+    it "prevents guestin user from creating a conversation" do
+      post "/api/conversations",
+      params: {
+        sender_id: 1,
+        recipient_id: 2,
+      }
+      expect(response).to have_http_status(401)
     end
   end
 end
