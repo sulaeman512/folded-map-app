@@ -5,6 +5,8 @@
   user: post.user.display_name,
   text: post.text,
   image_url: post.image_url,
-  comments: post.comments,
-  created_at: post.created_at
+  created_at: post.created_at,
+  comments: post.comments.map do |comment|
+    render partial: "/api/comments/comment", locals: {comment: comment}
+  end
 }

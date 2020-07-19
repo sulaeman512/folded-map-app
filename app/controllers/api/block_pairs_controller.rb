@@ -4,10 +4,9 @@ class Api::BlockPairsController < ApplicationController
 
   def show
     @block_pair = BlockPair.find_by(id: params[:id])
-    user = User.find(current_user.id)
     if @block_pair == nil
       render json: {}, status: :not_found
-    elsif user.block && user.block_pair && (user.block_pair.id == @block_pair.id)
+    elsif current_user.block && current_user.block_pair && (current_user.block_pair.id == @block_pair.id)
       render "show.json.jb"
     else
       render json: {}, status: :forbidden
