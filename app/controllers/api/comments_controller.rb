@@ -3,9 +3,8 @@ class Api::CommentsController < ApplicationController
   before_action :authenticate_user
 
   def create
-    user = User.find_by(id: current_user.id)
     post = Post.find_by(id: params[:post_id])
-    if user.block && user.block_pair && (user.block_pair.id == post.block_pair_id)
+    if current_user.block && current_user.block_pair && (current_user.block_pair.id == post.block_pair_id)
       @comment = Comment.new(
         user_id: current_user.id,
         post_id: params[:post_id],
@@ -33,7 +32,7 @@ class Api::CommentsController < ApplicationController
         render json: { errors: @post.errors.full_messages }, status: :bad_request
       end
     else
-      render json: {}, status: :bad_request
+      render json: {}, status: :forbidden
     end
   end
 

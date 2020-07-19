@@ -37,6 +37,4 @@ class Api::ConversationsController < ApplicationController
     end
   end
 
-  # Conversations create action is triggered by User update action (when address params are provided)
-
 end

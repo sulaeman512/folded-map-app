@@ -19,7 +19,9 @@ class Api::UsersController < ApplicationController
 
   def show
     @user = User.find_by(id: params[:id])
-    if (@user.id == current_user.id) || Conversation.find_by(sender_id: current_user.id, recipient_id: @user.id) || Conversation.find_by(sender_id: @user.id, recipient_id: current_user.id)
+    if current_user == @user
+      render "show.json.jb"
+    elsif current_user.block && current_user.block_pair && (@user.block_pair == current_user.block_pair)
       render "show.json.jb"
     else
       render json: {}, status: :forbidden
