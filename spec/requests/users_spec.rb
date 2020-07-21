@@ -15,24 +15,6 @@ RSpec.describe "Users", type: :request do
     user5 = User.create(email: "user5@gmail.com", password: "password", first_name: "User", last_name: "5", image_url: "5.jpg", birthday: DateTime.new(2005,5,30), block_id: block1.id)
     user6 = User.create(email: "user6@gmail.com", password: "password", first_name: "User", last_name: "6", image_url: "6.jpg", birthday: DateTime.new(2006,6,30), block_id: block2.id)
     Conversation.create(sender_id: user1.id, recipient_id: user3.id, map_twin: false)
-
-    # BlockPair.create([
-    #   {name: "w_8_8" ,ew_max: 3200, ns_max: 3200},
-    #   {name: "w_8_9" ,ew_max: 3200, ns_max: 3600},
-    #   {name: "w_9_8" ,ew_max: 3600, ns_max: 3200},
-    #   {name: "w_9_9" ,ew_max: 3600, ns_max: 3600},
-    # ])
-    # Block.create([
-    #   {name: "sw_8_7", block_pair_id: 2},
-    #   {name: "nw_8_8", block_pair_id: 3},
-    #   {name: "sw_8_8", block_pair_id: 3},
-    #   {name: "nw_8_9", block_pair_id: 4},
-    #   {name: "sw_8_9", block_pair_id: 4},
-    #   {name: "nw_9_8", block_pair_id: 5},
-    #   {name: "sw_9_8", block_pair_id: 5},
-    #   {name: "nw_9_9", block_pair_id: 6},
-    #   {name: "sw_9_9", block_pair_id: 6}
-    #   ])
   end
 
   describe "GET /users/:id" do

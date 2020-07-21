@@ -39,7 +39,7 @@ RSpec.describe "Comments", type: :request do
         post_id: post.id,
         text: "This is a comment"
       }
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(200)
       expect(Comment.second.text).to eq("This is a comment")
       expect(Comment.count).to eq(2)
     end
@@ -81,7 +81,7 @@ RSpec.describe "Comments", type: :request do
       params: {
         text: "Yep!"
       }
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(200)
       expect(Comment.first.text).to eq("Yep!")
     end
     it "should prevent a logged-in user from update another user's comments" do

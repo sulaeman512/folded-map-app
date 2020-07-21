@@ -1,7 +1,5 @@
 class User < ApplicationRecord
 
-  require 'http'
-
   has_secure_password
   validates :email, presence: true, uniqueness: true
 
@@ -12,7 +10,11 @@ class User < ApplicationRecord
 
   # belongs_to block_pair w/ custom method
   def block_pair
-    block.block_pair
+    if block
+      block.block_pair
+    else
+      nil
+    end
   end
 
   # has_many conversations w/ custom method
@@ -40,6 +42,7 @@ class User < ApplicationRecord
     sw_9_8: [[41.82244, -87.714365], [41.83017, -87.70443]],
     sw_9_9: [[41.815315, -87.7142025], [41.82259, -87.70425]]
   }
+
 
   # Triggered by user controller update action (only if address params provided); sends user input to HERE geocoding API, retrieves lat/lng, and standardizes input data for cohesive DB data
   def self.match_address(user, user_street_num, user_street_direction, user_street, user_zip_code)
@@ -89,6 +92,7 @@ class User < ApplicationRecord
 
   end
 
+
   # Triggered by match_address method; seeks direct N/S user address matches
   def self.check_map_twin_north_south
     
@@ -113,6 +117,7 @@ class User < ApplicationRecord
     end
 
   end
+
 
   # Triggered by match_address OR check_map_twin_north_south methods; seeks map twin for users on either E/W streets or N/S streets that don't have a direct address match on the other side of the city
   def self.check_map_twin_lat_lng
@@ -140,6 +145,7 @@ class User < ApplicationRecord
       @block_matches << block_key.to_s
     end
   end
+
 
   # Triggered by match_address; if more than one match, resolves overlapping match (does not deal with 'E' streets yet [anything East of State St])
   def self.assign_block_match
@@ -238,5 +244,4 @@ class User < ApplicationRecord
       end
     end
   end
-
 end

@@ -5,13 +5,13 @@ class Api::MessagesController < ApplicationController
   def create
     @conversation = Conversation.find_by(id: params[:conversation_id])
     if @conversation.sender_id == current_user.id || @conversation.recipient_id == current_user.id
-      message = Message.new(
+      @message = Message.new(
         conversation_id: params[:conversation_id],
         text: params[:text],
         user_id: current_user.id
       )
-      if message.save
-        render json: { message: "Message created successfully" }, status: :created
+      if @message.save
+        render "show.json.jb", status: :created
       else
         render json: { errors: conversation.errors.full_messages }, status: :bad_request
       end

@@ -2,17 +2,8 @@ class Api::PostsController < ApplicationController
 
   before_action :authenticate_user
 
-  def index
-    if current_user.block && current_user.block_pair
-      @posts = Post.where("block_pair_id = ?", current_user.block_pair.id)
-      render "index.json.jb"
-    else
-      render json: {}
-    end
-  end
-
   def create
-    if current_user.block && current_user.block_pair
+    if current_user.block_pair
       @post = Post.new(
         block_pair_id: current_user.block_pair.id,
         user_id: current_user.id,
@@ -31,7 +22,7 @@ class Api::PostsController < ApplicationController
 
   def show
     @post = Post.find_by(id: params[:id])
-    if current_user.block && current_user.block_pair && (current_user.block_pair.id == @post.block_pair.id)
+    if current_user.block_pair && (current_user.block_pair.id == @post.block_pair.id)
       render "show.json.jb"
     else
       render json: {}, status: :forbidden

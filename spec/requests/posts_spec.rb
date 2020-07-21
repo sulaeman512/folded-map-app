@@ -20,32 +20,6 @@ RSpec.describe "Posts", type: :request do
     post2 = Post.create(block_pair_id: block_pair2.id, user_id: user7.id, text: "Hey hey", image_url: "hey.jpg")
   end
 
-  describe "GET /posts" do
-    it "should allow a logged-in user to view an index of posts in their block pair" do
-      user = User.find_by(email: "user4@gmail.com")
-      block_pair = BlockPair.first
-      jwt = JWT.encode(
-        {
-          user_id: user.id, # the data to encode
-        },
-        Rails.application.credentials.fetch(:secret_key_base), # the secret key
-        "HS256" # the encryption algorithm
-      )
-      get "/api/posts", headers: {
-        "Authorization": "Bearer #{jwt}"
-      }
-      block_pair = BlockPair.first
-      posts = JSON.parse(response.body)
-      expect(response).to have_http_status(200)
-      expect(block_pair.posts.first.text).to eq("Blah blah")
-      expect(block_pair.posts.last.text).to eq("Blah blah")
-    end
-    it "should prevent a guest user from viewing any posts" do
-      get "/api/posts"
-      posts = JSON.parse(response.body)
-      expect(response).to have_http_status(401)
-    end
-  end
   describe "POST /posts" do
     it "should allow a logged-in user to create a post in their block pair" do
       user = User.find_by(email: "user4@gmail.com")

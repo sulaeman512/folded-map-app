@@ -4,14 +4,14 @@ class Api::CommentsController < ApplicationController
 
   def create
     post = Post.find_by(id: params[:post_id])
-    if current_user.block && current_user.block_pair && (current_user.block_pair.id == post.block_pair_id)
+    if current_user.block_pair && (current_user.block_pair.id == post.block_pair_id)
       @comment = Comment.new(
         user_id: current_user.id,
         post_id: params[:post_id],
         text: params[:text]
       )
       if @comment.save
-        render json: { message: "Comment created successfully" }, status: :created
+        render "show.json.jb"
       else
         render json: { errors: @post.errors.full_messages }, status: :bad_request
       end
@@ -27,7 +27,7 @@ class Api::CommentsController < ApplicationController
         text: params[:text] || @comment.text
       )
       if @comment.save
-        render json: { message: "Comment updated successfully" }, status: :created
+        render "show.json.jb"
       else
         render json: { errors: @post.errors.full_messages }, status: :bad_request
       end
