@@ -37,7 +37,7 @@ class Api::UsersController < ApplicationController
         email: params[:email] || @user.email,
         block_id: params[:block_id] || @user.block_id,
         image_url: params[:image_url] || @user.image_url,
-        how_i_got_here: params[:how_i_got_here] || @user.email,
+        how_i_got_here: params[:how_i_got_here] || @user.how_i_got_here,
         what_i_like: params[:what_i_like] || @user.what_i_like,
         what_i_would_change: params[:what_i_would_change] || @user.what_i_would_change,
         birthday: params[:birthday] || @user.birthday
