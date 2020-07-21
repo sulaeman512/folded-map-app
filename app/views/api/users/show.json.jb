@@ -1,1 +1,4 @@
 render partial: "user.json.jb", locals: { user: @user }
+
+# @user[:block_ns] = @user.block_pair.ns_max.to_s + @user.block.name[0].upcase
+# @user[:block_ew] = @user.block_pair.ew_max.to_s + @user.block.name[1].upcase

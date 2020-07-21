@@ -8,10 +8,12 @@
   street_direction: user.street_direction,
   street: user.street,
   zip_code: user.zip_code,
-  block_id: user.block_id,
   image_url: user.image_url,
   how_i_got_here: user.how_i_got_here,
   what_i_like: user.what_i_like,
   what_i_would_change: user.what_i_would_change,
-  birthday: user.birthday
+  birthday: user.birthday,
+  block_id: user.block_id,
+  block_ns: user.block_pair.ns_max.to_s + user.block.name[0].upcase,
+  block_ew: user.block_pair.ew_max.to_s + user.block.name[1].upcase
 }
