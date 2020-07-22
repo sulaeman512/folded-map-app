@@ -13,7 +13,5 @@
   what_i_like: user.what_i_like,
   what_i_would_change: user.what_i_would_change,
   birthday: user.birthday,
-  block_id: user.block_id,
-  block_ns: user.block_pair.ns_max.to_s + user.block.name[0].upcase,
-  block_ew: user.block_pair.ew_max.to_s + user.block.name[1].upcase
+  block_id: user.block_id
 }

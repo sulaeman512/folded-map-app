@@ -1,4 +1,8 @@
-render partial: "user.json.jb", locals: { user: @user }
+user_hash = render partial: "user.json.jb", locals: { user: @user }
 
-# @user[:block_ns] = @user.block_pair.ns_max.to_s + @user.block.name[0].upcase
-# @user[:block_ew] = @user.block_pair.ew_max.to_s + @user.block.name[1].upcase
+if @user.block && @user.block_pair
+  user_hash[:block_ns] = @user.block_pair.ns_max.to_s + @user.block.name[0].upcase
+  user_hash[:block_ew] = @user.block_pair.ew_max.to_s + @user.block.name[1].upcase
+end
+
+user_hash

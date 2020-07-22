@@ -4,6 +4,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   belongs_to :block, optional: true
+  has_one :block_pair, through: :block
   has_many :messages
   has_many :posts
   has_many :comments
