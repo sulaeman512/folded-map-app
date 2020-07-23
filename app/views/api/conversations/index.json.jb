@@ -8,6 +8,10 @@
     convo[:partner] = render partial: "/api/users/user", locals: {user: conversation.recipient}
   end
 
+  convo[:messages] = conversation.messages.map do |message|
+    render partial: "/api/messages/message", locals: {message: message}
+  end
+
   convo
 
 end

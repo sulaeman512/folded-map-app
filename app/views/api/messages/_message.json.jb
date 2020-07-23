@@ -4,5 +4,6 @@
   text: message.text,
   user_id: message.user_id,
   user: message.user.display_name,
+  user_image: message.user.image_url,
   created_at: message.created_at
 }
