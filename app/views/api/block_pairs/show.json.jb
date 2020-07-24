@@ -5,7 +5,13 @@ block_pair[:users] = @block_pair.users.map do |user|
 end
 
 block_pair[:posts] = @block_pair.posts.map do |post|
-  render partial: "/api/posts/post", locals: {post: post}
+  post_hash = render partial: "/api/posts/post", locals: {post: post}
+
+  post_hash[:comments] = post.comments.map do |comment|
+    render partial: "/api/comments/comment", locals: {comment: comment}
+  end
+  post_hash
+  
 end
 
 block_pair

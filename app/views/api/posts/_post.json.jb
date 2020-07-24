@@ -7,8 +7,8 @@
   user_image: post.user.image_url,
   text: post.text,
   image_url: post.image_url,
-  created_at: post.created_at,
-  comments: post.comments.map do |comment|
-    render partial: "/api/comments/comment", locals: {comment: comment}
-  end
+  created_at: post.created_at
 }
+
+# comments: post.comments.map do |comment|
+  #   render partial: "/api/comments/comment", locals: {comment: comment}
