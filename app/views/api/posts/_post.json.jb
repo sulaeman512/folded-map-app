@@ -3,6 +3,7 @@
   block_pair_id: post.block_pair_id,
   user_id: post.user_id,
   user: post.user.display_name,
+  user_first_name: post.user.first_name,
   user_image: post.user.image_url,
   text: post.text,
   image_url: post.image_url,
