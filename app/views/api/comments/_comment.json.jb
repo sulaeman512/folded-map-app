@@ -3,6 +3,7 @@
   post_id: comment.post_id,
   user_id: comment.user_id,
   user: comment.user.display_name,
+  user_image: comment.user.image_url,
   text: comment.text,
   created_at: comment.created_at
 }

@@ -1,5 +1,9 @@
 block_pair = render partial: "block_pair.json.jb", locals: { block_pair: @block_pair }
 
+block_pair[:users] = @block_pair.users.map do |user|
+  render partial: "/api/users/user", locals: {user: user}
+end
+
 block_pair[:posts] = @block_pair.posts.map do |post|
   render partial: "/api/posts/post", locals: {post: post}
 end
