@@ -12,7 +12,7 @@ class Api::ConversationsController < ApplicationController
     recipient = User.find_by(id: params[:recipient_id])
     if Conversation.between(current_user.id, recipient.id).present?
       @conversation = Conversation.between(sender.id, recipient.id).first
-      redirect_to "show.json.jb"
+      render "show.json.jb"
     elsif current_user.block == nil
       render json: {}, status: 400
     elsif sender.block_pair.id == recipient.block_pair.id
