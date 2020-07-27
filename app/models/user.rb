@@ -6,8 +6,8 @@ class User < ApplicationRecord
   belongs_to :block, optional: true
   has_one :block_pair, through: :block
   has_many :messages
-  has_many :posts
-  has_many :comments
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   # belongs_to block_pair w/ custom method
   def block_pair
