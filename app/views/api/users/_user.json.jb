@@ -13,5 +13,6 @@
   what_i_like: user.what_i_like,
   what_i_would_change: user.what_i_would_change,
   birthday: user.birthday,
-  block_id: user.block_id
+  block_id: user.block_id,
+  created_at: user.created_at
 }

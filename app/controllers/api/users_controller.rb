@@ -10,6 +10,9 @@ class Api::UsersController < ApplicationController
       password: params[:password],
       password_confirmation: params[:password_confirmation]
     )
+    if params[:street_num] || params[:street_direction] || params[:street] || params[:zip_code]
+      User.match_address(@user, params[:street_num], params[:street_direction], params[:street], params[:zip_code])
+    end
     if @user.save
       render "show.json.jb"
     else
