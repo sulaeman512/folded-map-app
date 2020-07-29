@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_25_163623) do
+ActiveRecord::Schema.define(version: 2020_07_29_183927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,22 @@ ActiveRecord::Schema.define(version: 2020_07_25_163623) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
+    t.decimal "north_sw_lat"
+    t.decimal "north_sw_lng"
+    t.decimal "north_se_lat"
+    t.decimal "north_se_lng"
+    t.decimal "north_ne_lat"
+    t.decimal "north_ne_lng"
+    t.decimal "north_nw_lat"
+    t.decimal "north_nw_lng"
+    t.decimal "south_sw_lat"
+    t.decimal "south_sw_lng"
+    t.decimal "south_se_lat"
+    t.decimal "south_se_lng"
+    t.decimal "south_ne_lat"
+    t.decimal "south_ne_lng"
+    t.decimal "south_nw_lat"
+    t.decimal "south_nw_lng"
   end
 
   create_table "blocks", force: :cascade do |t|
