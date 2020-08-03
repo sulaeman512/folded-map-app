@@ -10,6 +10,3 @@
   created_at: post.created_at,
   updated_at: post.updated_at
 }
-
-# comments: post.comments.map do |comment|
-  #   render partial: "/api/comments/comment", locals: {comment: comment}

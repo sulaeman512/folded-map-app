@@ -4,7 +4,7 @@ block_pair[:users] = @block_pair.users.map do |user|
   render partial: "/api/users/user", locals: {user: user}
 end
 
-block_pair[:posts] = @block_pair.posts.map do |post|
+block_pair[:posts] = @block_pair.posts.sort_by{|post| post[:created_at]}.reverse!.map do |post|
   post_hash = render partial: "/api/posts/post", locals: {post: post}
 
   post_hash[:comments] = post.comments.map do |comment|
