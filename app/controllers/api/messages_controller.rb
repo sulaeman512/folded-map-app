@@ -5,11 +5,11 @@ class Api::MessagesController < ApplicationController
   def create
     @user = current_user
     @conversation = Conversation.find_by(id: params[:conversation_id])
-    if @conversation.sender_id == current_user.id || @conversation.recipient_id == current_user.id
+    if @conversation.sender_id == @user.id || @conversation.recipient_id == @user.id
       @message = Message.new(
         conversation_id: params[:conversation_id],
         text: params[:text],
-        user_id: current_user.id
+        user_id: @user.id
       )
       if @message.save
         ActionCable.server.broadcast "messages_channel", {
@@ -21,7 +21,7 @@ class Api::MessagesController < ApplicationController
         }    
         render "show.json.jb", status: :created
       else
-        render json: { errors: conversation.errors.full_messages }, status: :bad_request
+        render json: { errors: @message.errors.full_messages }, status: :bad_request
       end
     else
       render json: {}, status: :forbidden
