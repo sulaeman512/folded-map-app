@@ -14,6 +14,7 @@ class Api::MessagesController < ApplicationController
       if @message.save
         ActionCable.server.broadcast "messages_channel", {
           id: @message.id,
+          conversation_id: @message.conversation_id,
           user_id: @message.user_id,
           text: @message.text,
           created_at: @message.created_at,
