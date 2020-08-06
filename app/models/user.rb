@@ -77,10 +77,17 @@ class User < ApplicationRecord
 
     # creates conversation between map twins (if found)
     if @map_twin
-      conversation = Conversation.create(
+      Conversation.create!(
         sender_id: @user.id,
         recipient_id: @map_twin.id,
         map_twin: true
+      )
+      @convo = Conversation.find_by(sender_id: @user.id, recipient_id: @map_twin.id,)
+      puts @convo.id
+      Message.create!(
+        conversation_id: @convo.id,
+        text: "[auto-message]\n\nYou two are Map Twins! Say hello!",
+        user_id: @user.id
       )
     end 
 

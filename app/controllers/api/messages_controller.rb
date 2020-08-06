@@ -9,7 +9,7 @@ class Api::MessagesController < ApplicationController
       @message = Message.new(
         conversation_id: params[:conversation_id],
         text: params[:text],
-        user_id: @user.id
+        user_id: params[:user_id] || @user.id
       )
       if @message.save
         ActionCable.server.broadcast "messages_channel", {
