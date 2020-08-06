@@ -33,17 +33,18 @@ class User < ApplicationRecord
     nw_8_7: [[41.92473, -87.7074], [41.9321, -87.69743]],
     nw_8_8: [[41.93203, -87.70762], [41.93939, -87.6976]],
     nw_8_9: [[41.93929, -87.7078], [41.9467, -87.69782]],
+    nw_9_6: [[41.91729, -87.71674], [41.92473, -87.70686]],
     nw_9_7: [[41.92462, -87.71721], [41.93203, -87.70686]],
     nw_9_8: [[41.93192, -87.71741], [41.93929, -87.7074]],
     nw_9_9: [[41.93923, -87.7176], [41.94663, -87.70762]],
     sw_8_7: [[41.83004, -87.70482], [41.83742, -87.69481]],
     sw_8_8: [[41.82259, -87.70459], [41.83007, -87.69461]],
     sw_8_9: [[41.81543, -87.70443], [41.82278, -87.69441]],
+    sw_9_6: [[41.83706, -87.71461], [41.84453, -87.70504]],
     sw_9_7: [[41.83004, -87.71461], [41.83723, -87.70459]],
     sw_9_8: [[41.82244, -87.714365], [41.83017, -87.70443]],
     sw_9_9: [[41.815315, -87.7142025], [41.82259, -87.70425]]
   }
-
 
   # Triggered by user controller update action (only if address params provided); sends user input to HERE geocoding API, retrieves lat/lng, and standardizes input data for cohesive DB data
   def self.match_address(user, user_street_num, user_street_direction, user_street, user_zip_code)
@@ -77,18 +78,20 @@ class User < ApplicationRecord
 
     # creates conversation between map twins (if found)
     if @map_twin
-      Conversation.create!(
-        sender_id: @user.id,
-        recipient_id: @map_twin.id,
-        map_twin: true
-      )
-      @convo = Conversation.find_by(sender_id: @user.id, recipient_id: @map_twin.id,)
-      puts @convo.id
-      Message.create!(
-        conversation_id: @convo.id,
-        text: "[auto-message]\n\nYou two are Map Twins! Say hello!",
-        user_id: @user.id
-      )
+      if !(Conversation.find_by(sender_id: @user.id, recipient_id: @map_twin.id) || Conversation.find_by(sender_id: @map_twin.id, recipient_id: @user.id))
+        Conversation.create!(
+          sender_id: @user.id,
+          recipient_id: @map_twin.id,
+          map_twin: true
+        )
+        @convo = Conversation.find_by(sender_id: @user.id, recipient_id: @map_twin.id)
+        puts @convo.id
+        Message.create!(
+          conversation_id: @convo.id,
+          text: "[auto-message]\n\nYou two are Map Twins! Say hello!",
+          user_id: @user.id
+        )
+      end
     end 
 
     # assigns block id to user

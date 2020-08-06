@@ -26,6 +26,8 @@ class Api::UsersController < ApplicationController
       render "show.json.jb"
     elsif current_user.block && current_user.block_pair && (@user.block_pair == current_user.block_pair)
       render "show.json.jb"
+    elsif Conversation.between(current_user.id, @user.id).present?
+      render "show.json.jb"
     else
       render json: {}, status: :forbidden
     end
